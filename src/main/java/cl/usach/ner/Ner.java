@@ -58,12 +58,10 @@ public class Ner implements Serializable  {
         this.hello = hello;
     }
     public void do_ner(){
-            StanfordCoreNLP pipeline = new StanfordCoreNLP(
-	PropertiesUtils.asProperties(
-		"annotators", "tokenize,ssplit,pos,lemma,parse,natlog",
-		"ssplit.isOneSentence", "true",
-		"parse.model", "edu/stanford/nlp/models/srparser/englishSR.ser.gz",
-		"tokenize.language", "es"));
+        Properties props = new Properties();
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
         // read some text in the text variable
         String text = "Conéctate con tus amigos y otras personas fascinantes. Obtén actualizaciones instantáneas de las cosas que te interesan. Mira los eventos que se están desarrollando, en tiempo real, desde todos los ángulos.";
 

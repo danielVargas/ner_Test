@@ -16,6 +16,11 @@
         Hello from Facelets
         <br />
         <h:link outcome="welcomePrimefaces" value="Primefaces welcome page" />
+        <h:form id="form" enctype="multipart/form-data" prependId="false">
+            <p:commandButton id="btn" icon="ui-icon-pencil" value="Do Ner" actionListener="#{ner.do_ner()}" ajax="false" />  
+          
+        </h:form>
+        
     </h:body>
 </html>
 
