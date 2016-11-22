@@ -36,14 +36,15 @@ public class Ner implements Serializable  {
 
     
     private String hello;
-
+    private String oracion;
+    private String nueva;
     
     
     @PostConstruct
     public void init() {
         
         hello = "hola mundooooooooo";
-
+        nueva = "";
     }
     /**
      * Creates a new instance of Ner
@@ -57,13 +58,31 @@ public class Ner implements Serializable  {
     public void setHello(String hello) {
         this.hello = hello;
     }
+
+    public String getOracion() {
+        return oracion;
+    }
+
+    public void setOracion(String oracion) {
+        this.oracion = oracion;
+    }
+
+    public String getNueva() {
+        return nueva;
+    }
+
+    public void setNueva(String nueva) {
+        this.nueva = nueva;
+    }
+    
     public void do_ner(){
-        Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
-        StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+        StanfordCoreNLP pipeline = new StanfordCoreNLP(
+	PropertiesUtils.asProperties(
+		"annotators", "tokenize,ssplit,pos,lemma,ner,parse,dcoref",
+		"tokenize.language", "es"));
 
         // read some text in the text variable
-        String text = "Conéctate con tus amigos y otras personas fascinantes. Obtén actualizaciones instantáneas de las cosas que te interesan. Mira los eventos que se están desarrollando, en tiempo real, desde todos los ángulos.";
+        String text = "RT @INFORMADORCHILE: Tsunami en Iquique inundó consultorio y Gobernación Marítima. http://t.co/dAgGtT63mf";
 
         // create an empty Annotation just with the given text
         Annotation document = new Annotation(text);
@@ -74,21 +93,27 @@ public class Ner implements Serializable  {
         // these are all the sentences in this document
         // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
         List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-
+        
+            oracion = text;
         for(CoreMap sentence: sentences) {
-            System.out.println("Oracion:");
+            System.out.println(sentence);
           // traversing the words in the current sentence
           // a CoreLabel is a CoreMap with additional token-specific methods
           for (CoreLabel token: sentence.get(TokensAnnotation.class)) {
             // this is the text of the token
               System.out.println("Palabra:");
-              System.out.println(token);
             String word = token.get(TextAnnotation.class);
               System.out.println(word);
+              nueva = nueva.concat(word);
             // this is the POS tag of the token
             String pos = token.get(PartOfSpeechAnnotation.class);
             // this is the NER label of the token
             String ne = token.get(NamedEntityTagAnnotation.class);
+              System.out.println(ne);
+              if (ne != null) {
+                  
+                nueva = nueva.concat(" "+ne+"\n");
+              }
           }
 
           // this is the parse tree of the current sentence
@@ -105,6 +130,6 @@ public class Ner implements Serializable  {
         Map<Integer, edu.stanford.nlp.dcoref.CorefChain> graph = 
           document.get(CorefChainAnnotation.class);
 
-
+        hello = "terminado";
     }
 }
