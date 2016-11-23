@@ -23,6 +23,12 @@ import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.PropertiesUtils;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -37,14 +43,14 @@ public class Ner implements Serializable  {
     
     private String hello;
     private String oracion;
-    private String nueva;
+    private ArrayList<ArrayList<String>> nueva;
     
     
     @PostConstruct
     public void init() {
         
         hello = "hola mundooooooooo";
-        nueva = "";
+        nueva = new ArrayList<>();
     }
     /**
      * Creates a new instance of Ner
@@ -67,22 +73,25 @@ public class Ner implements Serializable  {
         this.oracion = oracion;
     }
 
-    public String getNueva() {
+    public ArrayList<ArrayList<String>> getNueva() {
         return nueva;
     }
 
-    public void setNueva(String nueva) {
+    public void setNueva(ArrayList<ArrayList<String>> nueva) {
         this.nueva = nueva;
     }
+
     
-    public void do_ner(){
+    public void do_ner() throws FileNotFoundException, IOException{
+        
+        nueva = new ArrayList<>();
         StanfordCoreNLP pipeline = new StanfordCoreNLP(
 	PropertiesUtils.asProperties(
 		"annotators", "tokenize,ssplit,pos,lemma,ner,parse,dcoref",
 		"tokenize.language", "es"));
 
         // read some text in the text variable
-        String text = "RT @INFORMADORCHILE: Tsunami en Iquique inundó consultorio y Gobernación Marítima. http://t.co/dAgGtT63mf";
+        String text = "Perú y Ecuador emiten alerta de tsunami; tras sismo en Chile #Video: The post Perú y Ecuador emiten alerta de ... http://t.co/0R2uf73B1O";
 
         // create an empty Annotation just with the given text
         Annotation document = new Annotation(text);
@@ -104,7 +113,8 @@ public class Ner implements Serializable  {
               System.out.println("Palabra:");
             String word = token.get(TextAnnotation.class);
               System.out.println(word);
-              nueva = nueva.concat(word);
+              ArrayList<String> temp = new ArrayList<>();
+              temp.add(word);
             // this is the POS tag of the token
             String pos = token.get(PartOfSpeechAnnotation.class);
             // this is the NER label of the token
@@ -112,8 +122,10 @@ public class Ner implements Serializable  {
               System.out.println(ne);
               if (ne != null) {
                   
-                nueva = nueva.concat(" "+ne+"\n");
+                temp.add(ne);
               }
+              
+              nueva.add(temp);
           }
 
           // this is the parse tree of the current sentence

@@ -19,7 +19,15 @@
         <br/>
         <p:outputLabel value="#{ner.oracion}"/>
         <br/>
-        <p:outputLabel value="#{ner.nueva}"/>
+        <h3>Palabras</h3>
+        <table class="table table-hover">
+            <ui:repeat value="#{ner.nueva}" var="palabra">
+                <tr>
+                    <td>#{palabra.get(0)}</td>
+                    <td>#{palabra.get(1)}</td>
+                </tr>
+            </ui:repeat>
+        </table>
     </h:body>
 </html>
 
