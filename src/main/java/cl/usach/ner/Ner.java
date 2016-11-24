@@ -23,15 +23,9 @@ import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.PropertiesUtils;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 /**
  *
  * @author daniel
@@ -42,6 +36,7 @@ public class Ner implements Serializable  {
 
     
     private String hello;
+    private String tweet;
     private String oracion;
     private ArrayList<ArrayList<String>> nueva;
     
@@ -50,6 +45,7 @@ public class Ner implements Serializable  {
     public void init() {
         
         hello = "hola mundooooooooo";
+        tweet =  "Perú y Ecuador emiten alerta de tsunami; tras sismo en Chile #Video: The post Perú y Ecuador emiten alerta de por terremoto en #Iquique";
         nueva = new ArrayList<>();
     }
     /**
@@ -81,8 +77,16 @@ public class Ner implements Serializable  {
         this.nueva = nueva;
     }
 
+    public String getTweet() {
+        return tweet;
+    }
+
+    public void setTweet(String tweet) {
+        this.tweet = tweet;
+    }
     
-    public void do_ner() throws FileNotFoundException, IOException{
+    
+    public void do_ner(){
         
         nueva = new ArrayList<>();
         StanfordCoreNLP pipeline = new StanfordCoreNLP(
@@ -91,8 +95,8 @@ public class Ner implements Serializable  {
 		"tokenize.language", "es"));
 
         // read some text in the text variable
-        String text = "Perú y Ecuador emiten alerta de tsunami; tras sismo en Chile #Video: The post Perú y Ecuador emiten alerta de ... http://t.co/0R2uf73B1O";
-
+        String text = tweet;
+        text = text.replace("#", "");
         // create an empty Annotation just with the given text
         Annotation document = new Annotation(text);
 
